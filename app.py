@@ -105,6 +105,7 @@ def add_to_cart():
 
 
 
+
 #route for cart page
 #the cart() funtion sets up the cart page,and gets the cart with the items
 #for the current session
@@ -113,6 +114,50 @@ def cart():
     cart = session.get('cart', [])
     total = sum(item['total'] for item in cart)
     return render_template('cart.html', cart=cart, total=total)
+
+
+
+
+@app.route('/checkout')
+
+def checkout():
+
+    cart = session.get('cart', [])
+
+    if not cart:
+
+        return redirect(url_for('home'))
+
+    
+
+    total = sum(item['total'] for item in cart)
+
+    return render_template('checkout.html', cart=cart, total=total)
+
+
+@app.route('/complete_order', methods=['POST'])
+
+def complete_order():
+
+    # Get customer information
+
+    name = request.form.get('name')
+
+    email = request.form.get('email')
+
+    
+
+    # Clear the cart
+
+    session['cart'] = []
+
+    
+
+    # Show thank you page
+
+    return render_template('thank_you.html', name=name, email=email)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
